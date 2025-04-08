@@ -17,16 +17,20 @@ function getChoices() {
 // Function to check Book
 function getBookIndex(title) {
     let bookLocation;
-    library.forEach(
-        function (item, index) {
-            console.log(item.Title);
-            if (item.Title == title) {
-                console.log("Found: ", title);
-                bookLocation = index;
-            }
-        }
-    )
-    console.log("Book Location:", bookLocation);
+    // library.forEach(
+    //     function (item, index) {
+    //         console.log(item.Title);
+    //         if (item.Title == title) {
+    //             console.log("Found: ", title);
+    //             bookLocation = index;
+    //         }
+    //     }
+    // )
+    bookLocation = library.findIndex(library => library.Title === title);
+    if (bookLocation == -1) {
+        bookLocation = undefined;
+    }
+    // console.log("Book Location:", bookLocation);
     return bookLocation;
 }
 
@@ -34,14 +38,14 @@ function getBookIndex(title) {
 function addBook() {
     let book = {};
     book.Title = prompt("Enter Title of the book: ");
-    book.Author = prompt("Enter Author of the book: ");
-    book.isRead = false;
     let bookLocation = getBookIndex(book.Title);
     if (bookLocation == undefined) {
+        book.Author = prompt("Enter Author of the book: ");
+        book.isRead = false;
         library.push(book);
-        console.log("Book added to library.");
+        console.log(`Book title "${book.Title}" added to library.`);
     } else {
-        alert("Book already in the library");
+        alert(`Book title "${book.Title}" already in library!!`);
     }
 }
 
@@ -50,11 +54,10 @@ function removeBook() {
     let title = prompt("Enter Title of the book: ");
     let bookLocation = getBookIndex(title);
     if (bookLocation == undefined) {
-        console.log("Book not in library.");
+        alert(`Book title "${title}" not in library!!`);
     } else {
-        // delete library[bookLocation-1];
         library = library.slice(0, bookLocation).concat(library.slice(bookLocation + 1));
-        console.log("Book removed from library");
+        console.log(`Book title "${title}" removed from library.`);
     }
 }
 
@@ -79,14 +82,25 @@ function listUnreadBooks() {
         // No books in the library
         alert("No books in Library!!!");
     } else {
-        console.log("List of all un-read books in the Library");
-        library.forEach(
-            function (item, index) {
-                if (!item.isRead) {
-                    console.log(`${index + 1}. Title: ${item.Title}, Author: ${item.Author}, Read?: ${item.isRead}`);
+        // console.log("List of all un-read books in the Library");
+        // library.forEach(
+        //     function (item, index) {
+        //         if (!item.isRead) {
+        //             console.log(`${index + 1}. Title: ${item.Title}, Author: ${item.Author}, Read?: ${item.isRead}`);
+        //         }
+        //     }
+        // )
+        var unreadBooks = library.filter(library => library.isRead === false);
+        if (unreadBooks.length > 0) {
+            console.log("No of unRead books in library:", unreadBooks.length);
+            unreadBooks.forEach(
+                function (item, index) {
+                    console.log(`Title: ${item.Title}, Author: ${item.Author}`);
                 }
-            }
-        )
+            )
+        }else{
+            alert(`No un-read books in the library!!`);
+        }
     }
 }
 
@@ -94,12 +108,15 @@ function listUnreadBooks() {
 function markasRead(title) {
     let bookLocation = getBookIndex(title);
     if (bookLocation == undefined) {
-        alert("Book not in the library");
+        alert(`Book title "${title}" not in library!!`);
     } else {
         library[bookLocation].isRead = true;
-        console.log("Book marked as Read.");
+        console.log(`Book title "${title}" marked as Read.`);
     }
 }
+
+
+// Main script start from here
 
 var library = [];
 
@@ -132,6 +149,3 @@ while (running) {
             break;
     }
 }
-
-
-
